@@ -399,8 +399,13 @@
   async function bootPyodide(){
     try{
       pyodide = await loadPyodide();
-      statusEl.textContent = 'Loading pandas / numpy / openpyxl…';
-      await pyodide.loadPackage(['pandas', 'numpy', 'openpyxl']);
+      statusEl.textContent = 'Loading pandas / numpy…';
+      await pyodide.loadPackage(['pandas', 'numpy', 'micropip']);
+      statusEl.textContent = 'Loading openpyxl…';
+      await pyodide.runPythonAsync(`
+import micropip
+await micropip.install('openpyxl')
+`);
       const resp = await fetch('./assets/pipeline.py');
       const src = await resp.text();
       pyodide.runPython(src);
