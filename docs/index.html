@@ -519,7 +519,7 @@ try:
         rows['Avg_Daily_Requests'] = rows['Avg_Daily_Requests'].round(0)
         rows['Avg_Daily_Revenue'] = rows['Avg_Daily_Revenue'].round(2)
         rows['QPS_Change_Pct'] = rows['QPS_Change_Pct'].round(0)
-        rows['Daily_Cap'] = rows['Daily_Cap'].where(rows['Daily_Cap'].notna(), None)
+        rows['Daily_Cap'] = rows['Daily_Cap'].astype(object).where(rows['Daily_Cap'].notna(), None)
         return {
             'n': int(len(agg)),
             'counts': {k: int(v) for k, v in counts.items()},
