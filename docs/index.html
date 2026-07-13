@@ -512,11 +512,14 @@ try:
         rev_loss = float(agg.loc[dec_mask, 'Projected_Rev_Loss'].sum())
         rows = agg.sort_values('Final_Value_Score')[
             ['Group', 'Suggested_Action', 'Final_Mult', 'Final_Value_Score',
-             'Avg_Daily_Requests', 'Avg_Daily_Revenue', 'Trend', 'Bundle_Blocklist']
+             'Avg_Daily_Requests', 'Avg_Daily_Revenue', 'QPS_Change_Pct', 'Daily_Cap',
+             'Trend', 'Bundle_Blocklist']
         ].copy()
         rows['Final_Value_Score'] = rows['Final_Value_Score'].round(2)
         rows['Avg_Daily_Requests'] = rows['Avg_Daily_Requests'].round(0)
         rows['Avg_Daily_Revenue'] = rows['Avg_Daily_Revenue'].round(2)
+        rows['QPS_Change_Pct'] = rows['QPS_Change_Pct'].round(0)
+        rows['Daily_Cap'] = rows['Daily_Cap'].where(rows['Daily_Cap'].notna(), None)
         return {
             'n': int(len(agg)),
             'counts': {k: int(v) for k, v in counts.items()},
@@ -627,6 +630,8 @@ json.dumps(out)
         <td class="mono">${r.Final_Value_Score.toFixed(2)}</td>
         <td class="mono">${Math.round(r.Avg_Daily_Requests).toLocaleString()}</td>
         <td class="mono">$${r.Avg_Daily_Revenue.toFixed(2)}</td>
+        <td class="mono">${r.QPS_Change_Pct > 0 ? '+' : ''}${Math.round(r.QPS_Change_Pct)}%</td>
+        <td class="mono">${r.Daily_Cap != null ? Math.round(r.Daily_Cap).toLocaleString() : '—'}</td>
         <td>${trendSpan(r.Trend)}</td>
         <td style="color:var(--text-dim); font-size:12.5px;">${r.Bundle_Blocklist || ''}</td>
       </tr>`).join('');
@@ -636,7 +641,7 @@ json.dumps(out)
       <table class="results-table">
         <thead><tr>
           <th>Tag</th><th>Action</th><th>Ladder</th><th>Score</th>
-          <th>Avg Daily Req.</th><th>Avg Daily Rev.</th><th>Trend</th><th>Bundle blocklist</th>
+          <th>Avg Daily Req.</th><th>Avg Daily Rev.</th><th>QPS Change</th><th>Daily Cap</th><th>Trend</th><th>Bundle blocklist</th>
         </tr></thead>
         <tbody>${rowsHtml}</tbody>
       </table>
