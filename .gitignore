@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+output/
+*.xlsx
+!docs/assets/*.xlsx
+.DS_Store
